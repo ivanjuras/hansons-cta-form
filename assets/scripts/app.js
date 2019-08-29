@@ -5,13 +5,13 @@ var vm = new Vue({
 
   data: function() {
     return {
+      endPointURL: "", // Change your endpoint URL here
       formStep: 0,
       showError: false,
       city: "",
       stateAbbreviation: "",
       stateZipCode: "",
-      firstName: "",
-      lastName: "",
+      finalObject: {},
       formStepData: [
         {
           question: "Where do you need your New Windows installed?",
@@ -51,10 +51,13 @@ var vm = new Vue({
           errorMessage: "Please, type in your first name and your last name"
         },
         {
-          question: "Almost done",
-          value: "",
-          pattern: /[a-z0-9]/,
-          errorMessage: "Please, type in your first name and your last name"
+          question: "Final Step",
+          phoneNumber: "",
+          emailAddress: "",
+          patternPhone: /^1?\s?(\([0-9]{3}\)[- ]?|[0-9]{3}[- ]?)[0-9]{3}[- ]?[0-9]{4}$/,
+          patternEmail: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+          errorMessage:
+            "Please, type a correct phone number and/or email address"
         }
       ]
     }
@@ -110,6 +113,64 @@ var vm = new Vue({
       this.resetError()
     },
 
-    getFullName: function() {}
+    getFullName: function() {
+      if (
+        this.formStepData[this.formStep].pattern.test(
+          this.formStepData[this.formStep].firstName
+        ) &&
+        this.formStepData[this.formStep].pattern.test(
+          this.formStepData[this.formStep].lastName
+        )
+      ) {
+        this.formStep++
+        this.showError = false
+      } else {
+        this.showError = true
+      }
+    },
+
+    getPhoneandEmail: function() {
+      if (
+        this.formStepData[this.formStep].patternPhone.test(
+          this.formStepData[this.formStep].phoneNumber
+        ) &&
+        this.formStepData[this.formStep].patternEmail.test(
+          this.formStepData[this.formStep].emailAddress
+        )
+      ) {
+        this.finalObject = {
+          firstName: this.formStepData[5].firstName,
+          lastName: this.formStepData[5].lastName,
+          phoneNumber: this.formStepData[6].phoneNumber,
+          emailAddress: this.formStepData[6].emailAddress,
+          projectAddress: this.formStepData[4].value,
+          city: this.city,
+          zipCode: this.stateZipCode,
+          state: this.stateAbbreviation,
+          numWindowsInstalled: this.formStepData[1].value,
+          howSoon: this.formStepData[2].value,
+          financing: this.formStepData[3].value
+        }
+
+        console.log(JSON.stringify(this.finalObject))
+
+        axios({
+          method: "post",
+          url: this.endPointURL,
+          data: this.finalObject
+        })
+          .then(function(response) {
+            console.log(response)
+          })
+          .catch(function(error) {
+            console.log(error)
+          })
+
+        this.formStep++
+        this.showError = false
+      } else {
+        this.showError = true
+      }
+    }
   }
 })
