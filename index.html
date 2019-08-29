@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Hansons: Save Big This Summer</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/styles/style.css">
+  </head>
+  <body>
+
+    <!-- Header -->
+    <section class="main-header">
+      <div class="container">
+        <div class="main-header__left">
+            <img class="main-header__logo" src="./assets/media/logo.png" alt="Hansons Logo">
+            <h4 class="main-header__tagline">Save Big This Summer</h4>
+          </div>
+
+          <div class="main-header__right main-header__right--desktop">
+            <h4 class="main-header__call-cta">Call for an Instant Quote</h4>
+            <a href="tel:+1-888-497-9830" class="main-header__call-number">1-888-497-8930</a>
+          </div>
+
+          <div class="main-header__right main-header__right--mobile">
+            <a href="tel:+1-888-497-9830" class="main-header__call-icon">
+              <img src="assets/media/ringer-volume-50.png" alt="ringer phone">
+            </a>
+          </div>
+      </div>
+    </section>
+
+    <section class="main-content">
+      <div class="container container--main">
+        <div class="main-content__headline-section">
+          <h1 class="main-content__headline">
+              Request your Free Price Quote and get Instant Access to:
+            </h1>
+            <h2 class="main-content__subheadline">
+              <span class="desktop-only">Free Brochure + 50% off installation</span>
+              <span class="mobile-only">
+                <i class="fa fa-check" aria-hidden="true"></i> Free Brochure <br>
+                <i class="fa fa-check" aria-hidden="true"></i> 50% off installation <br>
+              </span>
+            </h2>
+        </div>
+  
+        <form class="form" id="main-form">
+          <transition  name="fade" mode="out-in">
+            <div key="0" v-if="formStep === 0" class="form__section form-step--0">
+              <p class="form__question">
+                {{ formStepData[0].question }}
+              </p>
+
+              <div class="form__field form__field--md-row">
+                  <span class="form__input-text--zip">
+                    <input
+                      v-model="formStepData[0].value"
+                      @keyup="resetError"
+                      class="form__input-text zip-code"
+                      :class="{ error: showError }"
+                      type="text"
+                      placeholder="Enter Zip Code"
+                    >
+                    <span key="10" v-if="showError" class="error-message">{{ formStepData[0].errorMessage }}</span>
+                  </span>
+                  <button
+                    @click.prevent="increaseFormStep"
+                    class="form-step__button form-step__button--float"
+                  >
+                    Next
+                  </buttonclass="form-step__button>
+              </div>
+            </div>
+
+            <div key="1" v-if="formStep === 1" class="form__section form-step--1">
+              <p class="form__question">
+                  {{ formStepData[1].question }}
+              </p>
+
+              <div class="form__field">
+                  <div class="input-radios">
+                      <div class="input-radio__block">
+                        <input
+                          @change="onSelectRadio"
+                          value="10+"
+                          name="window-number"
+                          type="radio"
+                          class="input-radio__item"
+                          id="10plus"
+                        >
+                        <label :class="{ error: showError }" class="input-radio__label" for="10plus">10+</label>
+                      </div>
+
+                      <div class="input-radio__block">
+                        <input
+                          @change="onSelectRadio"
+                          value="6-9"
+                          name="window-number"
+                          type="radio"
+                          class="input-radio__item"
+                          id="6-9"
+                        >
+                        <label :class="{ error: showError }" class="input-radio__label" for="6-9">6 - 9</label>
+                      </div>
+
+                      <div class="input-radio__block">
+                        <input 
+                          @change="onSelectRadio"
+                          value="3-5"
+                          name="window-number"
+                          type="radio"
+                          class="input-radio__item"
+                          id="3-5"
+                        >
+                        <label :class="{ error: showError }" class="input-radio__label" for="3-5">3 - 5</label>
+                      </div>
+
+                      <div class="input-radio__block">
+                        <input
+                          @change="onSelectRadio"
+                          value="2"
+                          name="window-number"
+                          type="radio"
+                          class="input-radio__item"
+                          id="2"
+                        >
+                        <label :class="{ error: showError }" class="input-radio__label" for="2">2</label>
+                      </div>
+                      <span key="10" v-if="showError" class="error-message">{{ formStepData[1].errorMessage }}</span>
+                  </div>
+                  <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
+              </div>
+            </div>
+
+            <div key="2" v-if="formStep === 2" class="form__section form-step--2">
+              <p class="form__question">
+                  {{ formStepData[2].question }}
+              </p>
+
+              <div class="form__field">
+                  <div class="input-radios">
+                      <div class="input-radio__block">
+                        <input
+                          @change="onSelectRadio"
+                          value="Within 1 Week"
+                          name="how-soon"
+                          type="radio"
+                          class="input-radio__item"
+                          id="within-1-week"
+                        >
+                        <label :class="{ error: showError }" class="input-radio__label" for="within-1-week">Within 1 Week</label>
+                      </div>
+
+                      <div class="input-radio__block">
+                        <input
+                          @change="onSelectRadio"
+                          value="1 - 2 Weeks"
+                          name="how-soon"
+                          type="radio"
+                          class="input-radio__item"
+                          id="1-2-weeks"
+                        >
+                        <label  :class="{ error: showError }" class="input-radio__label" for="1-2-weeks">1 - 2 Weeks</label>
+                      </div>
+
+                      <div class="input-radio__block">
+                        <input
+                          @change="onSelectRadio"
+                          value="More Than 2 Weeks"
+                          name="how-soon"
+                          type="radio"
+                          class="input-radio__item"
+                          id="more-than-2-weeks"
+                        >
+                        <label :class="{ error: showError }" class="input-radio__label" for="more-than-2-weeks">More Than 2 Weeks</label>
+                      </div>
+                      <span key="10" v-if="showError" class="error-message">{{ formStepData[2].errorMessage }}</span>
+                  </div>
+                  <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
+              </div>
+            </div>
+
+            <div key="3" v-if="formStep === 3" class="form__section form-step--3">
+              <p class="form__question">
+                  {{ formStepData[3].question }}
+              </p>
+
+              <div class="form__field">
+                  <div class="input-radios">
+                      <div class="input-radio__block">
+                        <input
+                          @change="onSelectRadio"
+                          value="Yes"
+                          name="financing"
+                          type="radio"
+                          class="input-radio__item"
+                          id="financing-yes"
+                        >
+                        <label :class="{ error: showError }" class="input-radio__label" for="financing-yes">Yes</label>
+                      </div>
+
+                      <div class="input-radio__block">
+                        <input
+                          @change="onSelectRadio"
+                          value="No"
+                          name="financing"
+                          type="radio"
+                          class="input-radio__item"
+                          id="financing-no"
+                        >
+                        <label :class="{ error: showError }" class="input-radio__label" for="financing-no">No</label>
+                      </div>
+
+                      <span key="10" v-if="showError" class="error-message">{{ formStepData[3].errorMessage }}</span>
+                  </div>
+                  <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
+              </div>
+            </div>
+
+            <div key="4" v-if="formStep === 4" class="form__section form-step--4">
+              <p class="form__question">
+                  {{ formStepData[4].question }}
+              </p>
+
+              <div class="form__field">
+                <div class="form__field form__field--md-row">
+                  <input
+                    v-model="formStepData[4].value"
+                    @keyup="resetError"
+                    :class="{ error: showError }"
+                    class="form__input-text street-address"
+                    type="text"
+                    placeholder="Street Address"
+                  >
+                  <span key="10" v-if="showError" class="error-message">{{ formStepData[4].errorMessage }}</span>
+                </div>
+                <div class="form__field form__field--address">
+                  <input v-model="city" class="form__input-text city" type="text" placeholder="City">
+                  <input v-model="stateAbbreviation" class="form__input-text state" type="text" placeholder="State">
+                  <input v-model="stateZipCode" class="form__input-text zip-prefilled" type="text" placeholder="ZIP">
+                </div>
+                <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
+              </div>
+            </div>
+
+            <div key="5" v-if="formStep === 5" class="form__section form-step--5">
+                <p class="form__question">
+                  {{ formStepData[5].question }}
+                </p>
+      
+                <div class="form__field">
+                    <div class="input-radios">
+                        <div class="input-radio__block">
+                          <input 
+                            v-model="firstName"
+                            @keyup="resetError"
+                            :class="{ error: showError }"
+                            class="form__input-text first-name"
+                            type="text"
+                            placeholder="First Name"
+                          >
+                        </div>
+      
+                        <div class="input-radio__block">
+                          <input
+                            v-model="lastName"
+                            @keyup="resetError"
+                            :class="{ error: showError }"
+                            class="form__input-text last-name"
+                            type="text"
+                            placeholder="Last Name"
+                          >
+                        </div>
+                    </div>
+                    <span key="10" v-if="showError" class="error-message">{{ formStepData[5].errorMessage }}</span>
+                    <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
+                </div>
+            </div>
+
+            <div key="6" v-if="formStep === 6" class="form__section form-step--6">
+              <p class="form__question">
+                Final step
+              </p>
+    
+              <div class="form__field">
+                  <div class="input-radios">
+                      <div class="input-radio__block">
+                        <span class="form__input-text--phone"><input class="form__input-text phone-number" type="tel" placeholder="Phone"></span>
+                      </div>
+    
+                      <div class="input-radio__block">
+                        <span class="form__input-text--email"><input class="form__input-text email-address" type="text" placeholder="Email"></span>
+                      </div>
+                  </div>
+                  <button class="form-step__button">Get Quote</button>
+                  <p class="confirmation">I’d like to learn about your promotions & understand you may use an automatic phone system and text messages to reach me at the number provided above.
+                  </p>
+              </div>
+            </div>
+
+            <div key="7" v-if="formStep === 7" class="thank-you">
+              <p>Hi Name,</p>
+              <p>Thank you for contacting Hansons!</p>
+              <p>A Window Replacement Specialist will call you to schedule your appointment.</p>
+              <p>TAKE ADVANTAGE OF 50% OFF INSTALLATION during your written price quote.</p>
+              <p>In the meantime, download your Free Brochure.</p>
+              <a class="download-brochure" href="/download/">Download Brochure</a>
+              <p class="u-text-center">Don’t forget: No Interest & No Payments until Summer of 2020 on approved credit.</p>
+            </div>
+          </transition>
+        </form>
+      </div>
+    </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+  <script src="assets/scripts/app.js"></script>
+  </body>
+</html>
