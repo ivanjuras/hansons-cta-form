@@ -1,3 +1,10 @@
+
+@font-face {
+    font-family: "FuturaPT";
+    src: url("../fonts/futura-pt/FuturaPT-Heavy.eot");
+    src: url("../fonts/futura-pt/FuturaPT-Heavy.woff") format("woff")
+  }
+
 /********** Global **********/
 
 * {
@@ -442,7 +449,7 @@ body {
   width: 80%;
   color: #294183;
   font-size: 1.25rem;
-  font-family: 'Lato', sans-serif;
+  font-family: 'FuturaPT', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
   padding: 8px 30px;
