@@ -48,7 +48,7 @@
         </div>
   
         <form class="form" id="main-form">
-          <transition  name="fade" mode="out-in">
+          <transition name="fade" mode="out-in">
             <div key="0" v-if="formStep === 0" class="form__section form-step--0">
               <p class="form__question">
                 {{ formStepData[0].question }}
@@ -61,17 +61,12 @@
                       @keyup="resetError"
                       class="form__input-text zip-code"
                       :class="{ error: showError }"
-                      type="text"
+                      type="number"
                       placeholder="Enter Zip Code"
                     >
                     <span key="10" v-if="showError" class="error-message">{{ formStepData[0].errorMessage }}</span>
                   </span>
-                  <button
-                    @click.prevent="increaseFormStep"
-                    class="form-step__button form-step__button--float"
-                  >
-                    Next
-                  </buttonclass="form-step__button>
+                  <button @click.prevent="increaseFormStep" class="form-step__button form-step__button--float">{{ buttonText }}</button>
               </div>
             </div>
 
@@ -131,7 +126,6 @@
                       </div>
                       <span key="10" v-if="showError" class="error-message">{{ formStepData[1].errorMessage }}</span>
                   </div>
-                  <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
               </div>
             </div>
 
@@ -179,7 +173,6 @@
                       </div>
                       <span key="10" v-if="showError" class="error-message">{{ formStepData[2].errorMessage }}</span>
                   </div>
-                  <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
               </div>
             </div>
 
@@ -216,7 +209,6 @@
 
                       <span key="10" v-if="showError" class="error-message">{{ formStepData[3].errorMessage }}</span>
                   </div>
-                  <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
               </div>
             </div>
 
@@ -239,10 +231,9 @@
                 </div>
                 <div class="form__field form__field--address">
                   <input v-model="city" class="form__input-text city" type="text" placeholder="City">
-                  <input v-model="stateAbbreviation" class="form__input-text state" type="text" placeholder="State">
-                  <input v-model="stateZipCode" class="form__input-text zip-prefilled" type="text" placeholder="ZIP">
+                  <input v-model="stateAbbreviation" maxlength="2" class="form__input-text state" type="text" placeholder="State">
+                  <input v-model="stateZipCode" class="form__input-text zip-prefilled" type="number" placeholder="ZIP">
                 </div>
-                <button @click.prevent="increaseFormStep" class="form-step__button">Next</button>
               </div>
             </div>
 
@@ -276,7 +267,6 @@
                         </div>
                     </div>
                     <span key="10" v-if="showError" class="error-message">{{ formStepData[5].errorMessage }}</span>
-                    <button @click.prevent="getFullName" class="form-step__button">Next</button>
                 </div>
             </div>
 
@@ -291,6 +281,7 @@
                         <span class="form__input-text--phone">
                           <input
                             v-model="formStepData[6].phoneNumber"
+                            @keyup="resetError"
                             :class="{ error: showError }"
                             class="form__input-text phone-number"
                             type="tel"
@@ -303,6 +294,7 @@
                         <span class="form__input-text--email">
                           <input
                             v-model="formStepData[6].emailAddress"
+                            @keyup="resetError"
                             :class="{ error: showError }"
                             class="form__input-text email-address"
                             type="text"
@@ -312,27 +304,34 @@
                       </div>
                   </div>
                   <span key="10" v-if="showError" class="error-message">{{ formStepData[6].errorMessage }}</span>
-                  <button @click.prevent="getPhoneandEmail" class="form-step__button">Get Quote</button>
-                  <p class="confirmation">I’d like to learn about your promotions & understand you may use an automatic phone system and text messages to reach me at the number provided above.
-                  </p>
               </div>
             </div>
 
-            <div key="7" v-if="formStep === 7" class="thank-you">
-              <p>Hi {{ formStepData[5].firstName }},</p>
-              <p>Thank you for contacting Hansons!</p>
-              <p>A Window Replacement Specialist will call you to schedule your appointment.</p>
-              <p>TAKE ADVANTAGE OF 50% OFF INSTALLATION during your written price quote.</p>
-              <p>In the meantime, download your Free Brochure.</p>
-              <a class="download-brochure" href="/download/">Download Brochure</a>
+            <div key="7" v-if="formStep === 7">
+              <div class="thank-you">
+                  <p>Hi {{ formStepData[5].firstName }},</p>
+                  <p>Thank you for contacting Hansons!</p>
+                  <p>A Window Replacement Specialist will call you to schedule your appointment.</p>
+                  <p>TAKE ADVANTAGE OF 50% OFF INSTALLATION during your written price quote.</p>
+                  <p>In the meantime, download your Free Brochure.</p>
+                  <a class="download-brochure" href="/download/">Download Brochure</a>
+              </div>
               <p class="u-text-center">Don’t forget: No Interest & No Payments until Summer of 2020 on approved credit.</p>
             </div>
+          </transition>
+
+          <transition name="fade-button">
+            <button v-show="showMainButton" @click.prevent="increaseFormStep" class="form-step__button">{{ buttonText }}</button>
+          </transition>
+          <transition name="fade-button">
+            <p v-show="showConfirmation" class="confirmation">I’d like to learn about your promotions & understand you may use an automatic phone system and text messages to reach me at the number provided above.
+            </p>
           </transition>
         </form>
       </div>
     </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
   <script src="assets/scripts/app.js"></script>
   </body>

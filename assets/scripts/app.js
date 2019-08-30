@@ -1,11 +1,12 @@
-Vue.config.devtools = true
-
 var vm = new Vue({
   el: "#main-form",
 
   data: function() {
     return {
       endPointURL: "", // Change your endpoint URL here
+      showMainButton: false,
+      buttonText: "Next",
+      showConfirmation: false,
       formStep: 0,
       showError: false,
       city: "",
@@ -38,7 +39,7 @@ var vm = new Vue({
           errorMessage: "Please, select one of the two options"
         },
         {
-          question: "What is your project address",
+          question: "What is your project address?",
           value: "",
           pattern: /[a-z0-9]/,
           errorMessage: "Please, type your address"
@@ -57,7 +58,7 @@ var vm = new Vue({
           patternPhone: /^1?\s?(\([0-9]{3}\)[- ]?|[0-9]{3}[- ]?)[0-9]{3}[- ]?[0-9]{4}$/,
           patternEmail: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
           errorMessage:
-            "Please, type a correct phone number and/or email address"
+            "Please, type the correct phone number and/or email address"
         }
       ]
     }
@@ -65,55 +66,79 @@ var vm = new Vue({
 
   methods: {
     increaseFormStep: function() {
+      if (this.formStep === 0) {
+        this.fireStep0Data()
+      } else if (this.formStep === 1) {
+        this.fireStep1Data()
+      } else if (this.formStep === 2) {
+        this.fireStep2Data()
+      } else if (this.formStep === 3) {
+        this.fireStep4Data()
+      } else if (this.formStep === 4) {
+        this.fireStep5Data()
+      } else if (this.formStep === 5) {
+        this.fireStep6Data()
+      } else if (this.formStep === 6) {
+        this.fireStep7Data()
+      }
+    },
+
+    fireStep0Data: function() {
       if (
         this.formStepData[this.formStep].pattern.test(
           this.formStepData[this.formStep].value
         )
       ) {
-        if (this.formStep === 0) {
-          axios
-            .get(
-              "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-                this.formStepData[0].value +
-                "&key=AIzaSyAI-0x82SSTmuM_bFWdh26gh4M0II3uVVY"
-            )
-            .then(function(response) {
-              var responseArray = response.data.results[0].address_components
-              responseArray.map(function(item) {
-                var types = item.types
+        axios
+          .get(
+            "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+              this.formStepData[0].value +
+              "&key=AIzaSyAI-0x82SSTmuM_bFWdh26gh4M0II3uVVY"
+          )
+          .then(function(response) {
+            var responseArray = response.data.results[0].address_components
+            responseArray.map(function(item) {
+              var types = item.types
 
-                types.map(function(type) {
-                  if (type === "locality") {
-                    vm.city = item.short_name
-                  } else if (type === "administrative_area_level_1") {
-                    vm.stateAbbreviation = item.short_name
-                  }
-                })
+              types.map(function(type) {
+                if (type === "locality") {
+                  vm.city = item.short_name
+                } else if (type === "administrative_area_level_1") {
+                  vm.stateAbbreviation = item.short_name
+                }
               })
-
-              vm.stateZipCode = vm.formStepData[0].value
-              vm.formStep++
-              vm.showError = false
             })
-        } else {
-          this.formStep++
-          this.showError = false
-        }
+
+            vm.stateZipCode = vm.formStepData[0].value
+            vm.formStep++
+            vm.showError = false
+            vm.showMainButton = true
+          })
+          .catch(function(error) {
+            vm.showError = true
+          })
       } else {
         this.showError = true
       }
     },
 
-    resetError: function() {
-      this.showError = false
+    fireStep1Data: function() {
+      this.standardStepFire()
     },
 
-    onSelectRadio: function(event) {
-      this.formStepData[this.formStep].value = event.target.value
-      this.resetError()
+    fireStep2Data: function() {
+      this.standardStepFire()
     },
 
-    getFullName: function() {
+    fireStep4Data: function() {
+      this.standardStepFire()
+    },
+
+    fireStep5Data: function() {
+      this.standardStepFire()
+    },
+
+    fireStep6Data: function() {
       if (
         this.formStepData[this.formStep].pattern.test(
           this.formStepData[this.formStep].firstName
@@ -124,12 +149,14 @@ var vm = new Vue({
       ) {
         this.formStep++
         this.showError = false
+        this.showConfirmation = true
+        this.buttonText = "Get Quote"
       } else {
         this.showError = true
       }
     },
 
-    getPhoneandEmail: function() {
+    fireStep7Data: function() {
       if (
         this.formStepData[this.formStep].patternPhone.test(
           this.formStepData[this.formStep].phoneNumber
@@ -152,12 +179,10 @@ var vm = new Vue({
           financing: this.formStepData[3].value
         }
 
-        console.log(JSON.stringify(this.finalObject))
-
         axios({
           method: "post",
           url: this.endPointURL,
-          data: this.finalObject
+          data: JSON.stringify(this.finalObject)
         })
           .then(function(response) {
             console.log(response)
@@ -168,9 +193,40 @@ var vm = new Vue({
 
         this.formStep++
         this.showError = false
+        this.showMainButton = false
+        this.showConfirmation = false
+
+        setTimeout(function() {
+          var headlineSection = document.querySelector(
+            ".main-content__headline-section"
+          )
+          headlineSection.parentNode.removeChild(headlineSection)
+        }, 500)
       } else {
         this.showError = true
       }
+    },
+
+    standardStepFire: function() {
+      if (
+        this.formStepData[this.formStep].pattern.test(
+          this.formStepData[this.formStep].value
+        )
+      ) {
+        this.formStep++
+        this.showError = false
+      } else {
+        this.showError = true
+      }
+    },
+
+    resetError: function() {
+      this.showError = false
+    },
+
+    onSelectRadio: function(event) {
+      this.formStepData[this.formStep].value = event.target.value
+      this.resetError()
     }
   }
 })
